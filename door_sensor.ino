@@ -23,8 +23,8 @@ const int DOOR_SENSOR_PIN_6 = 6;
 const int DOOR_SENSOR_PIN_7 = 7;
 const int DOOR_SENSOR_PIN_8 = 8;
 const int DOOR_SENSOR_PIN_9 = 9;
-const int DOOR_SENSOR_PIN_10 = 10;
-const int DOOR_SENSOR_PIN_11 = 11;
+//const int DOOR_SENSOR_PIN_10 = 10;
+//const int DOOR_SENSOR_PIN_11 = 11;
 
 int counter = 0;
 int doorState2 = LOW;
@@ -45,8 +45,8 @@ int prevDoorState6 = LOW;
 int prevDoorState7 = LOW;
 int prevDoorState8 = LOW;
 int prevDoorState9 = LOW;
-int prevDoorState10 = LOW;
-int prevDoorState11 = LOW;
+//int prevDoorState10 = LOW;
+//int prevDoorState11 = LOW;
 
 
 void setup() {
@@ -67,8 +67,9 @@ void setup() {
   pinMode(DOOR_SENSOR_PIN_7, INPUT_PULLUP);
   pinMode(DOOR_SENSOR_PIN_8, INPUT_PULLUP);
   pinMode(DOOR_SENSOR_PIN_9, INPUT_PULLUP);
-  pinMode(DOOR_SENSOR_PIN_10, INPUT_PULLUP);
-  pinMode(DOOR_SENSOR_PIN_11, INPUT_PULLUP);
+//  pinMode(DOOR_SENSOR_PIN_10, INPUT_PULLUP);
+//  pinMode(DOOR_SENSOR_PIN_11, INPUT_PULLUP);
+
   doorState2 = digitalRead(DOOR_SENSOR_PIN_2);
   doorState3 = digitalRead(DOOR_SENSOR_PIN_3);
   doorState4 = digitalRead(DOOR_SENSOR_PIN_4);
@@ -77,8 +78,8 @@ void setup() {
   doorState7 = digitalRead(DOOR_SENSOR_PIN_7);
   doorState8 = digitalRead(DOOR_SENSOR_PIN_8);
   doorState9 = digitalRead(DOOR_SENSOR_PIN_9);
-  doorState10 = digitalRead(DOOR_SENSOR_PIN_10);
-  doorState11 = digitalRead(DOOR_SENSOR_PIN_11);
+//  doorState10 = digitalRead(DOOR_SENSOR_PIN_10);
+//  doorState11 = digitalRead(DOOR_SENSOR_PIN_11);
 }
 
 void loop() {
@@ -92,8 +93,8 @@ void loop() {
   doorOpened(prevDoorState7, doorState7, DOOR_SENSOR_PIN_7, 7);
   doorOpened(prevDoorState8, doorState8, DOOR_SENSOR_PIN_8, 8);
   doorOpened(prevDoorState9, doorState9, DOOR_SENSOR_PIN_9, 9);
-  doorOpened(prevDoorState10, doorState10, DOOR_SENSOR_PIN_10, 10);
-  doorOpened(prevDoorState11, doorState11, DOOR_SENSOR_PIN_11, 11);
+//  doorOpened(prevDoorState10, doorState10, DOOR_SENSOR_PIN_10, 10);
+//  doorOpened(prevDoorState11, doorState11, DOOR_SENSOR_PIN_11, 11);
 
   display.clearDisplay();               // Clear buffer
 //  delay(2000);                          // Delay by ms where 1000 ms = 1 second
