@@ -1,0 +1,2 @@
+Plot: "D:\Users\Hai Dang\Documents\KiCad\DoorSensor\DoorSensor Schematics\DoorSensor.svg" OK.
+
