@@ -127,10 +127,7 @@ void doorOpened(int &prevDoorState, int &currentDoorState, int doorSensorPin, in
 //    EEPROM.write(ADDRESS_EEPROM, counter);
     writeIntToEEPROM(ADDRESS_EEPROM, counter);
     eeprom_value = readIntFromEEPROM(ADDRESS_EEPROM);
-    Serial.print(ADDRESS_EEPROM);
-    Serial.print("\t");
-    Serial.print(eeprom_value);
-    Serial.println();
+    Serial.println(String(ADDRESS_EEPROM) + "\t" + String(eeprom_value));
   }
 }
 
@@ -146,7 +143,7 @@ void writeIntToEEPROM(int address, int num){
   EEPROM.write(address + 3, (num & 0xFF));
 }
 /**
- * Converts the read in memory and converts it to integer
+ * Converts the byte addresses in memory to integer
  */
 int readIntFromEEPROM(int address) {
   int value = 0;
