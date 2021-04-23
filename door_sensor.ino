@@ -16,10 +16,6 @@
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-//const unsigned long day = 10000; // 10 second test, 86400000 when ready
-//unsigned long mytime = millis();// getting time for day condition below
-const int ADDRESS_EEPROM = 1;
-int value;
 const int DOOR_SENSOR_PIN_2 = 2;
 const int DOOR_SENSOR_PIN_3 = 3;
 const int DOOR_SENSOR_PIN_4 = 4;
@@ -30,6 +26,7 @@ const int DOOR_SENSOR_PIN_8 = 8;
 const int DOOR_SENSOR_PIN_9 = 9;
 const int DOOR_SENSOR_PIN_10 = 10;
 const int DOOR_SENSOR_PIN_11 = 11;
+const int INT_BYTE_SIZE = 4;
 
 int counter = 0;
 int doorState2 = LOW;
@@ -53,6 +50,8 @@ int prevDoorState9 = LOW;
 int prevDoorState10 = LOW;
 int prevDoorState11 = LOW;
 
+const int ADDRESS_EEPROM = 0;
+int eeprom_value;
 
 void setup() {
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
@@ -85,12 +84,13 @@ void setup() {
   doorState10 = digitalRead(DOOR_SENSOR_PIN_10);
   doorState11 = digitalRead(DOOR_SENSOR_PIN_11);
 
-  counter = EEPROM.read(ADDRESS_EEPROM);  
+//  counter = EEPROM.read(ADDRESS_EEPROM); 
+//  EEPROM.write(ADDRESS_EEPROM, 0);  
+  counter = readIntFromEEPROM(ADDRESS_EEPROM);
+  clearEEPROM(); //if user clicks reset button twice, then the counter will reset to 0
 }
 
 void loop() {
-  //  doorState7 = digitalRead(DOOR_SENSOR_PIN_7);
-  //  doorState8 = digitalRead(DOOR_SENSOR_PIN_8);
   doorOpened(prevDoorState2, doorState2, DOOR_SENSOR_PIN_2, 2);
   doorOpened(prevDoorState3, doorState3, DOOR_SENSOR_PIN_3, 3);
   doorOpened(prevDoorState4, doorState4, DOOR_SENSOR_PIN_4, 4);
@@ -110,30 +110,57 @@ void loop() {
   display.setCursor(0, 0);              // Start at top-left corner
   display.cp437(true);                  // Use full 256 char 'Code Page 437' font
   display.println(F("Door Opened Count"));    // Text to be shown and added to display buffer
-
   display.println("Count: " + String(counter));
-
   display.display();
   delay(1);
-  //  delay(1000);
-
-  
-
 }
-// 86400000 is a day
+
+/**
+ * Checks current door state and previous door state to see if it's opened or closed
+ */
 void doorOpened(int &prevDoorState, int &currentDoorState, int doorSensorPin, int pin) {
   prevDoorState = currentDoorState;
   currentDoorState = digitalRead(doorSensorPin);
   if (prevDoorState == LOW && currentDoorState == HIGH) {
-    Serial.println("Door is opened: " + String(pin));
-    counter += 1;
-    EEPROM.write(ADDRESS_EEPROM, counter);
-    value = EEPROM.read(ADDRESS_EEPROM);
+    Serial.println("Door is opened with pin: " + String(pin));
+    counter++;
+//    EEPROM.write(ADDRESS_EEPROM, counter);
+    writeIntToEEPROM(ADDRESS_EEPROM, counter);
+    eeprom_value = readIntFromEEPROM(ADDRESS_EEPROM);
     Serial.print(ADDRESS_EEPROM);
     Serial.print("\t");
-    Serial.print(value);
+    Serial.print(eeprom_value);
     Serial.println();
-    //if (mytime % day == 0) { //testing with 10 seconds - ideally counter value gets recorded every 10 seconds
-      //for (int i = 0 ; i < 3; i++) { //i++ instead of i + 1, i < 90 for less than 90 days?
+  }
+}
+
+/**
+ * Int is 4 bytes, each byte is 8 bits 
+ * Writes the integer and segments it into 4 byte addresses
+ * 
+ */
+void writeIntToEEPROM(int address, int num){
+  EEPROM.write(address,     ((num >> 24) & 0xFF));  
+  EEPROM.write(address + 1, ((num >> 16) & 0xFF));
+  EEPROM.write(address + 2, ((num >> 8) & 0xFF));
+  EEPROM.write(address + 3, (num & 0xFF));
+}
+/**
+ * Converts the read in memory and converts it to integer
+ */
+int readIntFromEEPROM(int address) {
+  int value = 0;
+  for(int i = 0; i < INT_BYTE_SIZE; i++ ) {
+    value <<= 8;
+    value += EEPROM.read(address + i);
+  }
+  return value;
+}
+/**
+ * Clears the eeprom memory 
+ */
+void clearEEPROM() {
+  for(int i = 0; i < EEPROM.length(); i++) {
+    EEPROM.write(ADDRESS_EEPROM + i, 0);
   }
 }
